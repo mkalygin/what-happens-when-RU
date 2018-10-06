@@ -94,33 +94,33 @@ Bus (USB) или через Bluetooth, но исторически осущес�
 
 *В случае использования USB клавиатуры:*
 
-  - The USB circuitry of the keyboard is powered by the 5V supply provided over
-    pin 1 from the computer's USB host controller.
+    - The USB circuitry of the keyboard is powered by the 5V supply provided over
+      pin 1 from the computer's USB host controller.
 
 - USB схема клавиатуры питается напряжением 5В, обеспеченным первым контактом
   USB контроллера компьютера.
 
-  - The keycode generated is stored by internal keyboard circuitry memory in a
+    The keycode generated is stored by internal keyboard circuitry memory in a
     register called "endpoint".
 
 - Сгенерированный код клавиши хранится во внутренней памяти схемы клавиатуры,
   в регистре USB контроллера. Этот регистр называется «конечной точкой».
 
-  - The host USB controller polls that "endpoint" every ~10ms (minimum value
+    The host USB controller polls that "endpoint" every ~10ms (minimum value
     declared by the keyboard), so it gets the keycode value stored on it.
 
 - USB контроллер компьютера запрашивает информацию из этого регистра с частотой
   ~10мс (минимальное значение, заявленное клавиатурой), чтобы получить значение
   кода клавиши, хранящееся в нём.
 
-  - This value goes to the USB SIE (Serial Interface Engine) to be converted in
+    This value goes to the USB SIE (Serial Interface Engine) to be converted in
     one or more USB packets that follow the low level USB protocol.
 
 - Это значение передаётся в USB SIE (Serial Interface Engine) для преобразования
   в один или более USB пакеты, которые затем передаются по низкоуровневому
   USB протоколу.
 
-  - Those packets are sent by a differential electrical signal over D+ and D-
+    Those packets are sent by a differential electrical signal over D+ and D-
     pins (the middle 2) at a maximum speed of 1.5 Mb/s, as an HID
     (Human Interface Device) device is always declared to be a "low speed device"
     (USB 2.0 compliance).
@@ -130,7 +130,7 @@ Bus (USB) или через Bluetooth, но исторически осущес�
   Interface Device) устройство всегда является «устройством с низкой скоростью»
   (совместимым c USB 2.0).
 
-  - This serial signal is then decoded at the computer's host USB controller, and
+    This serial signal is then decoded at the computer's host USB controller, and
     interpreted by the computer's Human Interface Device (HID) universal keyboard
     device driver.  The value of the key is then passed into the operating
     system's hardware abstraction layer.
@@ -141,7 +141,7 @@ Bus (USB) или через Bluetooth, но исторически осущес�
 
 *В случае виртуальной клавиатуры (как в планшетах и смартфонах):*
 
-  - When the user puts their finger on a modern capacitive touch screen, a
+    When the user puts their finger on a modern capacitive touch screen, a
     tiny amount of current gets transferred to the finger. This completes the
     circuit through the electrostatic field of the conductive layer and
     creates a voltage drop at that point on the screen. The
@@ -154,7 +154,7 @@ Bus (USB) или через Bluetooth, но исторически осущес�
   в этой точке экрана. ``Контроллер экрана`` затем вызывает сигнал прерывания и
   сообщает координаты нажатия на экране.
 
-  - Then the mobile OS notifies the current focused application of a press event
+    Then the mobile OS notifies the current focused application of a press event
     in one of its GUI elements (which now is the virtual keyboard application
     buttons).
 
@@ -162,13 +162,13 @@ Bus (USB) или через Bluetooth, но исторически осущес�
   на экран в одном из его GUI элементов (в данном случае это кнопки в приложении
   виртуальной клавиатуры).
 
-  - The virtual keyboard can now raise a software interrupt for sending a
+    The virtual keyboard can now raise a software interrupt for sending a
     'key pressed' message back to the OS.
 
 - Виртуальная клавиатура теперь может вызвать программное прерывание для
   отправки сообщения операционной системе о нажатии клавиши.
 
-  - This interrupt notifies the current focused application of a 'key pressed'
+    This interrupt notifies the current focused application of a 'key pressed'
     event.
 
 - Это прерывание уведомляет текущее активное приложение о событии нажатой
