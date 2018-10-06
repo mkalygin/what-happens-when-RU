@@ -1,5 +1,5 @@
 Что происходит, когда...
-====================
+========================
 
   This repository is an attempt to answer the age old interview question "What
   happens when you type google.com into your browser's address box and press
@@ -35,14 +35,14 @@
 проверены авторами оригинала.
 
 Содержание
-====================
+==========
 
 .. contents::
    :backlinks: none
    :local:
 
 Нажатие клавиши "g"
-----------------------
+-------------------
 
   The following sections explain the physical keyboard actions
   and the OS interrupts. When you press the key "g" the browser receives the
@@ -67,6 +67,112 @@
 которые обновляют варианты автозаполнения после нажатия каждой клавиши. Функция
 автозаполнения может даже предложить вариант "google.com" до того, как вы
 закончите набор этой строки.
+
+Нажатие клавиши "Enter"
+-----------------------
+
+  To pick a zero point, let's choose the Enter key on the keyboard hitting the
+  bottom of its range. At this point, an electrical circuit specific to the enter
+  key is closed (either directly or capacitively). This allows a small amount of
+  current to flow into the logic circuitry of the keyboard, which scans the state
+  of each key switch, debounces the electrical noise of the rapid intermittent
+  closure of the switch, and converts it to a keycode integer, in this case 13.
+  The keyboard controller then encodes the keycode for transport to the computer.
+  This is now almost universally over a Universal Serial Bus (USB) or Bluetooth
+  connection, but historically has been over PS/2 or ADB connections.
+
+В качестве отправной точки рассмотрим ситуацию, когда клавиша "Enter" находится
+в нажатом состоянии. В этот момент связанная с клавишей "Enter" электрическая
+цепь замкнута (либо напрямую, либо посредством ёмкостной связи). В результате
+замыкания ток попадает в логическую схему клавиатуры, которая сканирует состояние
+выключателей всех клавиш, воспринимает электрический сигнал нажатия клавиши,
+а затем преобразует его в числовой код клавиши, который в этом случае равен 13.
+После чего контроллер клавиатуры подготавливает числовой код клавиши для
+передачи его компьютеру. Сейчас передача осуществляется через Universal Serial
+Bus (USB) или через Bluetooth, но исторически осуществлялась через PS/2 или ADB
+соединения.
+
+*В случае использования USB клавиатуры:*
+
+  - The USB circuitry of the keyboard is powered by the 5V supply provided over
+    pin 1 from the computer's USB host controller.
+
+- USB схема клавиатуры питается напряжением 5В, обеспеченным первым контактом
+  USB контроллера компьютера.
+
+  - The keycode generated is stored by internal keyboard circuitry memory in a
+    register called "endpoint".
+
+- Сгенерированный код клавиши хранится во внутренней памяти схемы клавиатуры,
+  в регистре USB контроллера. Этот регистр называется «конечной точкой».
+
+  - The host USB controller polls that "endpoint" every ~10ms (minimum value
+    declared by the keyboard), so it gets the keycode value stored on it.
+
+- USB контроллер компьютера запрашивает информацию из этого регистра с частотой
+  ~10мс (минимальное значение, заявленное клавиатурой), чтобы получить значение
+  кода клавиши, хранящееся в нём.
+
+  - This value goes to the USB SIE (Serial Interface Engine) to be converted in
+    one or more USB packets that follow the low level USB protocol.
+
+- Это значение передаётся в USB SIE (Serial Interface Engine) для преобразования
+  в один или более USB пакеты, которые затем передаются по низкоуровневому
+  USB протоколу.
+
+  - Those packets are sent by a differential electrical signal over D+ and D-
+    pins (the middle 2) at a maximum speed of 1.5 Mb/s, as an HID
+    (Human Interface Device) device is always declared to be a "low speed device"
+    (USB 2.0 compliance).
+
+- Эти пакеты пересылаются дифференциальным электрическим сигналом по контактам
+  D+ и D- (средние два контакта) с максимальной скоростью 1.5Мб/с, т.к. HID (Human
+  Interface Device) устройство всегда является «устройством с низкой скоростью»
+  (совместимым c USB 2.0).
+
+  - This serial signal is then decoded at the computer's host USB controller, and
+    interpreted by the computer's Human Interface Device (HID) universal keyboard
+    device driver.  The value of the key is then passed into the operating
+    system's hardware abstraction layer.
+
+- Этот последовательный сигнал затем декодируется в USB контроллере компьютера и
+  интерпретируется универсальным драйвером HID клавиатуры. Значение клавиши затем
+  передаётся в абстрактный аппаратный слой операционной системы.
+
+*В случае виртуальной клавиатуры (как в планшетах и смартфонах):*
+
+  - When the user puts their finger on a modern capacitive touch screen, a
+    tiny amount of current gets transferred to the finger. This completes the
+    circuit through the electrostatic field of the conductive layer and
+    creates a voltage drop at that point on the screen. The
+    ``screen controller`` then raises an interrupt reporting the coordinate of
+    the key press.
+
+- Когда пользователь нажимает пальцем на современный ёмкостный сенсорный экран,
+  ток электрической цепи проходит через палец. Это замыкает электрическую цепь
+  через электростатическое поле проводящей плоскости и приводит к падению напряжения
+  в этой точке экрана. ``Контроллер экрана`` затем вызывает сигнал прерывания и
+  сообщает координаты нажатия на экране.
+
+  - Then the mobile OS notifies the current focused application of a press event
+    in one of its GUI elements (which now is the virtual keyboard application
+    buttons).
+
+- Затем мобильная ОС уведомляет текущее активное приложение о событии нажатия
+  на экран в одном из его GUI элементов (в данном случае это кнопки в приложении
+  виртуальной клавиатуры).
+
+  - The virtual keyboard can now raise a software interrupt for sending a
+    'key pressed' message back to the OS.
+
+- Виртуальная клавиатура теперь может вызвать программное прерывание для
+  отправки сообщения операционной системе о нажатии клавиши.
+
+  - This interrupt notifies the current focused application of a 'key pressed'
+    event.
+
+- Это прерывание уведомляет текущее активное приложение о событии нажатой
+  клавиши.
 
 .. _`Creative Commons Zero`: https://creativecommons.org/publicdomain/zero/1.0/
 .. _`английском` : https://github.com/alex/what-happens-when
